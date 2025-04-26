@@ -1,0 +1,55 @@
+
+pipeline {
+    agent any
+
+    environment {
+        ACR_NAME = 'bhavikaregistry.azurecr.io'       // ACR login server name
+        IMAGE_NAME = 'todoapi'
+        IMAGE_TAG = 'v1'
+        AZURE_CREDENTIALS_ID = 'azure-acr-creds'   // Jenkins credential ID for Azure
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                git url:'https://github.com/Bhavika6940/Assignment-2.git',branch:'main'
+            }
+        }
+
+        stage('Azure Login') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(
+                        credentialsId: "${AZURE_CREDENTIALS_ID}",
+                        usernameVariable: 'AZURE_USER',
+                        passwordVariable: 'AZURE_PASS'
+                    )]) {
+                        sh 'echo $AZURE_PASS | docker login ${ACR_NAME} -u $AZURE_USER --password-stdin'
+                    }
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh "docker build -t ${ACR_NAME}/${IMAGE_NAME}:${IMAGE_TAG} ."
+                }
+            }
+        }
+
+        stage('Push Docker Image to ACR') {
+            steps {
+                script {
+                    sh "docker push ${ACR_NAME}/${IMAGE_NAME}:${IMAGE_TAG}"
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline finished.'
+        }
+    }
+}
