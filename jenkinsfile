@@ -27,7 +27,9 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry("https://${ACR_LOGIN_SERVER}", "${CREDENTIALS_ID}") {
-                        dockerImage.push('latest')
+                    dockerImage.push('latest')
+                     }
+
                     }
                 }
             }
