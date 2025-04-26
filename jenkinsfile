@@ -1,0 +1,45 @@
+pipeline {
+    agent any
+
+    environment {
+        ACR_LOGIN_SERVER = 'bhavikaregistry.azurecr.io'    // your ACR login server
+        IMAGE_NAME = 'nodeconsoleapp'                     // your image name
+        CREDENTIALS_ID = 'jenkins-pipeline-sp'             // Jenkins ACR credentials ID
+    }
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git url: 'https://github.com/Bhavika6940/Assignment-2', branch: 'main'
+
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    dockerImage = docker.build("${ACR_LOGIN_SERVER}/${IMAGE_NAME}:latest", "Assignment-2")
+                }
+            }
+        }
+
+        stage('Push to Azure ACR') {
+            steps {
+                script {
+                    docker.withRegistry("https://${ACR_LOGIN_SERVER}", "${CREDENTIALS_ID}") {
+                        dockerImage.push('latest')
+                    }
+                }
+            }
+        }
+    } // <<==== This closing brace was missing here!
+
+    post {
+        success {
+            echo '✅ Image pushed successfully to Azure ACR!'
+        }
+        failure {
+            echo '❌ Pipeline failed during some step!'
+        }
+    }
+}
