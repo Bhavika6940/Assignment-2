@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         ACR_LOGIN_SERVER = 'bhavikaregistry.azurecr.io'    // your ACR login server
-        IMAGE_NAME = 'nodeconsoleapp1'                     // your image name
+        IMAGE_NAME = 'nodeconsoleapp'                     // your image name
         CREDENTIALS_ID = 'jenkins-pipeline-sp'             // Jenkins ACR credentials ID
     }
 
