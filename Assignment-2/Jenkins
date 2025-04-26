@@ -1,55 +1,58 @@
-
 pipeline {
     agent any
 
     environment {
-        ACR_NAME = 'bhavikaregistry.azurecr.io'       // ACR login server name
-        IMAGE_NAME = 'todoapi'
-        IMAGE_TAG = 'v1'
-        AZURE_CREDENTIALS_ID = 'azure-acr-creds'   // Jenkins credential ID for Azure
+        ACR_LOGIN_SERVER = 'bhavikaregistry.azurecr.io'    // your ACR login server
+        IMAGE_NAME = 'nodeconsoleapp1'                      // your image name
+        CREDENTIALS_ID = 'jenkins-pipeline-sp'              // Jenkins ACR credentials ID
+        KUBECONFIG_CREDENTIAL_ID = 'kubeconfig-cred-id'     // (new) Jenkins ID for kubeconfig
     }
 
     stages {
-        stage('Checkout Code') {
+        stage('Clone Repository') {
             steps {
-                git url:'https://github.com/Bhavika6940/Assignment-2.git',branch:'master'
-            }
-        }
-
-        stage('Azure Login') {
-            steps {
-                script {
-                    withCredentials([usernamePassword(
-                        credentialsId: "${AZURE_CREDENTIALS_ID}",
-                        usernameVariable: 'AZURE_USER',
-                        passwordVariable: 'AZURE_PASS'
-                    )]) {
-                        sh 'echo $AZURE_PASS | docker login ${ACR_NAME} -u $AZURE_USER --password-stdin'
-                    }
-                }
+                git url: 'https://github.com/rani25lodha/AssissmentCapgemini', branch: 'main'
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh "docker build -t ${ACR_NAME}/${IMAGE_NAME}:${IMAGE_TAG} ."
+                    dockerImage = docker.build("${ACR_LOGIN_SERVER}/${IMAGE_NAME}:latest", "NodeConsoleApp1")
                 }
             }
         }
 
-        stage('Push Docker Image to ACR') {
+        stage('Push to Azure ACR') {
             steps {
                 script {
-                    sh "docker push ${ACR_NAME}/${IMAGE_NAME}:${IMAGE_TAG}"
+                    docker.withRegistry("https://${ACR_LOGIN_SERVER}", "${CREDENTIALS_ID}") {
+                        dockerImage.push('latest')
+                    }
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                withCredentials([file(credentialsId: "${KUBECONFIG_CREDENTIAL_ID}", variable: 'KUBECONFIG')]) {
+                    sh '''
+                    kubectl apply -f deployment.yaml
+                    kubectl apply -f service.yaml
+                    '''
                 }
             }
         }
     }
 
     post {
-        always {
-            echo 'Pipeline finished.'
+        success {
+            echo '✅ Image pushed and deployed to Kubernetes successfully!'
+        }
+        failure {
+            echo '❌ Pipeline failed during some step!'
         }
     }
 }
+
+ 
