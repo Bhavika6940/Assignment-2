@@ -26,10 +26,8 @@ pipeline {
         stage('Push to Azure ACR') {
             steps {
                 script {
-                   docker.withRegistry("https://${ACR_LOGIN_SERVER}", "${CREDENTIALS_ID}") {
-                    dockerImage.push('latest')
-                     }
-
+                    docker.withRegistry("https://${ACR_LOGIN_SERVER}", "${CREDENTIALS_ID}") {
+                        dockerImage.push('latest')
                     }
                 }
             }
