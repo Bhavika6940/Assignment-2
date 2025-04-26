@@ -3,9 +3,8 @@ pipeline {
 
     environment {
         ACR_LOGIN_SERVER = 'bhavikaregistry.azurecr.io'    // your ACR login server
-        IMAGE_NAME = 'nodeconsoleapp1'                      // your image name
-        CREDENTIALS_ID = 'jenkins-pipeline-sp'              // Jenkins ACR credentials ID
-        
+        IMAGE_NAME = 'nodeconsoleapp1'                     // your image name
+        CREDENTIALS_ID = 'jenkins-pipeline-sp'             // Jenkins ACR credentials ID
     }
 
     stages {
@@ -32,12 +31,11 @@ pipeline {
                 }
             }
         }
-
-       
+    } // <<==== This closing brace was missing here!
 
     post {
         success {
-            echo '✅ Image pushed and deployed to Kubernetes successfully!'
+            echo '✅ Image pushed successfully to Azure ACR!'
         }
         failure {
             echo '❌ Pipeline failed during some step!'
@@ -45,4 +43,3 @@ pipeline {
     }
 }
 
- 
