@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         ACR_LOGIN_SERVER = 'practice234registry.azurecr.io'     // <-- Replace with your ACR Login Server
-        ACR_CREDENTIALS_ID = 'acr-service-principal-id'  // <-- Jenkins credentials ID (username/password for ACR)
+        ACR_CREDENTIALS_ID = 'jenkins-pipeline-sp'  // <-- Jenkins credentials ID (username/password for ACR)
         IMAGE_NAME = 'consoleapp'                  // <-- Your Docker image name
         REPO_URL = 'https://github.com/Bhavika6940/Assignment-2'  // <-- GitHub Repo
     }
