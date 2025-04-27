@@ -8,7 +8,7 @@ pipeline {
         REPO_URL = 'https://github.com/Bhavika6940/Assignment-2'  // <-- GitHub Repo
     }
     
-    def dockerImage=null    
+    
 
     stages {
         stage('Checkout Code') {
