@@ -7,14 +7,7 @@ pipeline {
         IMAGE_NAME = 'consoleapp'                  // <-- Your Docker image name
         REPO_URL = 'https://github.com/Bhavika6940/Assignment-2'  // <-- GitHub Repo
     }
-     stages {
-        stage('Initialize') {
-            steps {
-                script {
-                    dockerImage = null
-                }
-            }
-        }
+    
            
 
     stages {
@@ -27,7 +20,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    dockerImage = docker.build("${ACR_LOGIN_SERVER}/${IMAGE_NAME}:latest")
+                    def dockerImage = docker.build("${ACR_LOGIN_SERVER}/${IMAGE_NAME}:latest")
                 }
             }
         }
