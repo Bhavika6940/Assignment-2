@@ -8,7 +8,7 @@ pipeline {
         REPO_URL = 'https://github.com/Bhavika6940/Assignment-2'  // <-- GitHub Repo
     }
     
-           
+    def dockerImage=null    
 
     stages {
         stage('Checkout Code') {
@@ -20,7 +20,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    def dockerImage = docker.build("${ACR_LOGIN_SERVER}/${IMAGE_NAME}:latest")
+                    dockerImage = docker.build("${ACR_LOGIN_SERVER}/${IMAGE_NAME}:latest")
                 }
             }
         }
