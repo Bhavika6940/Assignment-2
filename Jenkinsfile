@@ -18,7 +18,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    dockerImage = docker.build("${ACR_LOGIN_SERVER}/${IMAGE_NAME}:latest")
+                    def dockerImage = docker.build("${ACR_LOGIN_SERVER}/${IMAGE_NAME}:latest")
                 }
             }
         }
